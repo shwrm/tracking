@@ -1,0 +1,5 @@
+tracking:
+    path: /track/{carrier}
+    controller: Shwrm\Tracking\Controller\TrackingController::trackAction
+    requirements:
+        carrier: '\w+'
