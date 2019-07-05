@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+    tracking:
+        tty: true
+        image: shwrmdev/tracking
+        build:
+            context: .
+            args:
+                GITHUB_ACCESS_TOKEN: ${GITHUB_ACCESS_TOKEN}
+        volumes:
+            -  .:/var/www/tracking:cached
+        extra_hosts:
+            - 'dockerhost:${DOCKER_HOST_IP}'
+            - 'api.shwrm:${DOCKER_MACHINE_SHWRM}'
+        expose:
+            - 9000
