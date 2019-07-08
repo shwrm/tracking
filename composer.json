@@ -3,6 +3,7 @@
     "license": "proprietary",
     "require": {
         "php": "^7.3",
+        "mirolabs/ruch-client": "dev-master",
         "symfony/flex": "^1.4",
         "symfony/framework-bundle": "^4.3",
         "symfony/security-bundle": "^4.3",
@@ -28,7 +29,14 @@
             "Tests\\Shwrm\\Tracking\\": "tests/"
         }
     },
-    "minimum-stability": "stable",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:shwrm/paczkawruchuClient.git"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "scripts": {
         "auto-scripts": {
             "cache:clear": "symfony-cmd"

@@ -1,4 +1,40 @@
 {
+    "doctrine/annotations": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "cb4152ebcadbe620ea2261da1a1c5a9b8cea7672"
+        },
+        "files": [
+            "config/routes/annotations.yaml"
+        ]
+    },
+    "doctrine/instantiator": {
+        "version": "1.2.0"
+    },
+    "doctrine/lexer": {
+        "version": "1.0.2"
+    },
+    "jms/metadata": {
+        "version": "1.7.0"
+    },
+    "jms/parser-lib": {
+        "version": "1.0.0"
+    },
+    "jms/serializer": {
+        "version": "1.14.0"
+    },
+    "mirolabs/ruch-client": {
+        "version": "dev-master"
+    },
+    "phpcollection/phpcollection": {
+        "version": "0.5.0"
+    },
+    "phpoption/phpoption": {
+        "version": "1.5.0"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },

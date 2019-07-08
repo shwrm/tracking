@@ -2,7 +2,21 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+        public: false
 
     Shwrm\Tracking\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    Shwrm\Tracking\Integrations\Adapters\:
+        resource: '../src/Integrations/Adapters'
+        tags: ['shwrm.tracking.adapter']
+
+    Shwrm\Tracking\Integrations\AdapterResolver:
+        arguments: [[!tagged shwrm.tracking.adapter]]
+
+    mirolabs\ruch\client\Client:
+        arguments:
+            - '%env(PWR_PARTNER_ID)%'
+            - '%env(PWR_PARTNER_KEY)%'
+            - '%env(PWR_ENV)%'
