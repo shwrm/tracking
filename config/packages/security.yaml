@@ -1,0 +1,12 @@
+security:
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
+    providers:
+        tracking_users:
+            memory:
+                users:
+                    tracking: { password: '%env(TRACKING_PASSWORD)%', roles: ['ROLE_USER'] }
+    firewalls:
+        main:
+            http_basic:
+                realm: Secured Area
