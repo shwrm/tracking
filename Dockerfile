@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libpq-dev \
     libxml2-dev \
+    libzip-dev \
     zlib1g-dev \
     git-core \
     && apt-get -y autoclean
@@ -22,7 +23,9 @@ RUN docker-php-ext-configure \
 RUN docker-php-ext-install \
     intl \
     mbstring \
-    opcache
+    opcache \
+    soap \
+    zip
 
 COPY .docker/php/conf.d/datatimezone.ini /usr/local/etc/php/conf.d/datetimezone.ini
 COPY .docker/php/conf.d/memory-limit.ini /usr/local/etc/php/conf.d/memory-limit.ini
