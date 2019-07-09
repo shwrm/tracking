@@ -39,6 +39,6 @@ class TrackingController
             return new JsonResponse('Cannot fetch status', 400);
         }
 
-        return new JsonResponse($status);
+        return new JsonResponse(['status' => $status]);
     }
 }

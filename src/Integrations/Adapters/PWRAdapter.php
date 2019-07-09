@@ -8,8 +8,6 @@ use mirolabs\ruch\client\Type\PackStatus;
 use Shwrm\Tracking\Enum\Status;
 use Shwrm\Tracking\Exception\UnknownStatusException;
 use Shwrm\Tracking\Integrations\AbstractAdapter;
-use Shwrm\Tracking\ValueObject\Collection\ValidationErrors;
-use Shwrm\Tracking\ValueObject\ValidationError;
 
 class PWRAdapter extends AbstractAdapter
 {
@@ -24,15 +22,6 @@ class PWRAdapter extends AbstractAdapter
     public function name(): string
     {
         return 'pwr';
-    }
-
-    public function validate(array $parameters): ValidationErrors
-    {
-        if (false === isset($parameters['trackingCode'])) {
-            $errors[] = new ValidationError('trackingCode', 'is missing');
-        }
-
-        return new ValidationErrors($errors ?? []);
     }
 
     public function fetchStatus(array $parameters): string
