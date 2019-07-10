@@ -1,0 +1,74 @@
+{
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "region": "eu-central-1",
+            "source_ami_filter": {
+                "filters": {
+                    "virtualization-type": "hvm",
+                    "name": "debian-stretch-*",
+                    "root-device-type": "ebs"
+                },
+                "owners": [
+                    "679593333241"
+                ],
+                "most_recent": true
+            },
+            "instance_type": "t3.micro",
+            "ssh_username": "admin",
+            "ami_name": "Tracking {{isotime \"2006.1.2.15.4\"}}"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "sudo wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg",
+                "echo \"deb https://packages.sury.org/php/ $(lsb_release -sc) main\" | sudo tee /etc/apt/sources.list.d/php7.3.list",
+                "sudo wget https://nginx.org/keys/nginx_signing.key",
+                "sudo apt-key add nginx_signing.key",
+                "echo \"deb https://nginx.org/packages/mainline/debian/ $(lsb_release -sc) nginx\" | sudo tee /etc/apt/sources.list.d/nginx.list",
+                "sudo DEBIAN_FRONTEND=noninteractive apt update",
+                "sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y",
+                "sudo DEBIAN_FRONTEND=noninteractive apt -y install php7.3 nginx apt-transport-https ca-certificates git lsb-release",
+                "sudo DEBIAN_FRONTEND=noninteractive apt install -y php7.3-curl php7.3-ctype php7.3-iconv php7.3-json php7.3-mbstring php7.3-sockets php7.3-zip php7.3-xml",
+                "sudo rm -rf /etc/nginx/conf.d/*.conf",
+                "php -v",
+                "php -r \"copy('https://getcomposer.org/installer', 'composer-setup.php');\"",
+                "php -r \"if (hash_file('sha384', 'composer-setup.php') === '48e3236262b34d30969dca3c37281b3b4bbe3221bda826ac6a9a62d6444cdb0dcd0615698a5cbe587c3f0fe57a54d8f5') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;\"",
+                "sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer",
+                "php -r \"unlink('composer-setup.php');\"",
+                "composer global require hirak/prestissimo",
+                "sudo DEBIAN_FRONTEND=noninteractive addgroup shwrm",
+                "sudo DEBIAN_FRONTEND=noninteractive useradd -g shwrm -s /bin/bash -m tracking",
+                "sudo -u tracking mkdir /home/tracking/.ssh"
+            ]
+        },
+        {
+          "type": "file",
+          "source": "files/tracking.conf",
+          "destination": "/tmp/tracking.conf"
+        },
+        {
+          "type": "file",
+          "source": "files/environment",
+          "destination": "/tmp/environment"
+        },
+        {
+          "type": "file",
+          "source": "files/nginx.conf",
+          "destination": "/tmp/nginx.conf"
+        },
+        {
+          "type": "shell",
+          "inline": [
+            "sudo cp /tmp/environment /etc/environment",
+            "sudo mkdir /etc/nginx/sites-available",
+            "sudo mkdir /etc/nginx/sites-enabled",
+            "sudo cp /tmp/tracking.conf /etc/nginx/sites-available/100-tracking.conf",
+            "sudo cp /tmp/nginx.conf /etc/nginx/nginx.conf",
+            "sudo ln -s /etc/nginx/sites-available/100-tracking.conf /etc/nginx/sites-enabled/100-tracking.conf"
+          ]
+        }
+    ]
+}
