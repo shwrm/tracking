@@ -17,6 +17,9 @@
     "doctrine/lexer": {
         "version": "1.0.2"
     },
+    "easycorp/easy-deploy-bundle": {
+        "version": "v1.0.5"
+    },
     "jms/metadata": {
         "version": "1.7.0"
     },
@@ -56,6 +59,19 @@
     "symfony/config": {
         "version": "v4.3.2"
     },
+    "symfony/console": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "482d233eb8de91ebd042992077bbd5838858890c"
+        },
+        "files": [
+            "bin/console",
+            "config/bootstrap.php"
+        ]
+    },
     "symfony/debug": {
         "version": "v4.3.2"
     },
@@ -70,6 +86,9 @@
     },
     "symfony/event-dispatcher-contracts": {
         "version": "v1.1.5"
+    },
+    "symfony/expression-language": {
+        "version": "v4.3.2"
     },
     "symfony/filesystem": {
         "version": "v4.3.2"
@@ -150,6 +169,9 @@
     },
     "symfony/polyfill-php73": {
         "version": "v1.11.0"
+    },
+    "symfony/process": {
+        "version": "v4.3.2"
     },
     "symfony/property-access": {
         "version": "v4.3.2"
