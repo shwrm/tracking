@@ -13,8 +13,8 @@ resource "aws_security_group" "tracking" {
   }
 
   ingress {
-    from_port = 443
-    to_port   = 443
+    from_port = 8080
+    to_port   = 8080
     protocol  = "TCP"
 
     cidr_blocks = [
@@ -110,14 +110,8 @@ resource "aws_eip" "tracking" {
   }
 }
 
-resource "aws_route53_zone" "this" {
-  name = "tracking"
-
-  vpc_id = "${module.vpc.vpc_id}"
-}
-
 resource "aws_lb_target_group" "tracking" {
-  port     = 443
+  port     = 8080
   protocol = "HTTP"
   vpc_id   = "${module.vpc.vpc_id}"
 
@@ -216,6 +210,6 @@ output "LB" {
 resource "cloudflare_record" "tracking" {
   domain = "shwrm.net"
   name   = "tracking"
-  type   = "A"
   value  = "${aws_lb.tracking.dns_name}"
+  type   = "CNAME"
 }

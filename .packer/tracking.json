@@ -31,7 +31,7 @@
                 "sudo DEBIAN_FRONTEND=noninteractive apt update",
                 "sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y",
                 "sudo DEBIAN_FRONTEND=noninteractive apt -y install php7.3 nginx apt-transport-https ca-certificates git lsb-release",
-                "sudo DEBIAN_FRONTEND=noninteractive apt install -y php7.3-curl php7.3-ctype php7.3-iconv php7.3-json php7.3-mbstring php7.3-sockets php7.3-zip php7.3-xml",
+                "sudo DEBIAN_FRONTEND=noninteractive apt install -y php7.3-fpm php7.3-curl php7.3-ctype php7.3-iconv php7.3-json php7.3-mbstring php7.3-sockets php7.3-zip php7.3-xml",
                 "sudo rm -rf /etc/nginx/conf.d/*.conf",
                 "php -v",
                 "php -r \"copy('https://getcomposer.org/installer', 'composer-setup.php');\"",
@@ -41,7 +41,8 @@
                 "composer global require hirak/prestissimo",
                 "sudo DEBIAN_FRONTEND=noninteractive addgroup shwrm",
                 "sudo DEBIAN_FRONTEND=noninteractive useradd -g shwrm -s /bin/bash -m tracking",
-                "sudo -u tracking mkdir /home/tracking/.ssh"
+                "sudo -u tracking mkdir /home/tracking/.ssh",
+                "sudo usermod -a -G www-data tracking"
             ]
         },
         {
@@ -60,6 +61,16 @@
           "destination": "/tmp/nginx.conf"
         },
         {
+          "type": "file",
+          "source": "files/php.ini",
+          "destination": "/tmp/php.ini"
+        },
+        {
+          "type": "file",
+          "source": "files/www.conf",
+          "destination": "/tmp/www.conf"
+        },
+        {
           "type": "shell",
           "inline": [
             "sudo cp /tmp/environment /etc/environment",
@@ -67,7 +78,9 @@
             "sudo mkdir /etc/nginx/sites-enabled",
             "sudo cp /tmp/tracking.conf /etc/nginx/sites-available/100-tracking.conf",
             "sudo cp /tmp/nginx.conf /etc/nginx/nginx.conf",
-            "sudo ln -s /etc/nginx/sites-available/100-tracking.conf /etc/nginx/sites-enabled/100-tracking.conf"
+            "sudo ln -s /etc/nginx/sites-available/100-tracking.conf /etc/nginx/sites-enabled/100-tracking.conf",
+            "sudo cp /tmp/php.ini /etc/php/7.3/fpm/php.ini",
+            "sudo cp /tmp/www.conf /etc/php/7.3/fpm/pool.d/www.conf"
           ]
         }
     ]
