@@ -3,3 +3,7 @@ tracking:
     controller: Shwrm\Tracking\Controller\TrackingController::trackAction
     requirements:
         carrier: '\w+'
+
+status:
+    path: /status
+    controller: Shwrm\Tracking\Controller\HealthCheckController::heartbeatAction
