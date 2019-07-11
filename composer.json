@@ -4,6 +4,7 @@
     "require": {
         "php": "^7.3",
         "mirolabs/ruch-client": "dev-master",
+        "symfony/console": "^4.3",
         "symfony/flex": "^1.4",
         "symfony/framework-bundle": "^4.3",
         "symfony/security-bundle": "^4.3",
