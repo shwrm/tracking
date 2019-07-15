@@ -31,7 +31,7 @@
                 "sudo DEBIAN_FRONTEND=noninteractive apt update",
                 "sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y",
                 "sudo DEBIAN_FRONTEND=noninteractive apt -y install php7.3 nginx apt-transport-https ca-certificates git lsb-release",
-                "sudo DEBIAN_FRONTEND=noninteractive apt install -y php7.3-fpm php7.3-curl php7.3-ctype php7.3-iconv php7.3-json php7.3-mbstring php7.3-sockets php7.3-zip php7.3-xml php7.3-soap",
+                "sudo DEBIAN_FRONTEND=noninteractive apt install -y php7.3-fpm php7.3-curl php7.3-ctype php7.3-iconv php7.3-json php7.3-mbstring php7.3-sockets php7.3-zip php7.3-xml",
                 "sudo rm -rf /etc/nginx/conf.d/*.conf",
                 "php -v",
                 "php -r \"copy('https://getcomposer.org/installer', 'composer-setup.php');\"",
@@ -42,7 +42,7 @@
                 "sudo DEBIAN_FRONTEND=noninteractive addgroup shwrm",
                 "sudo DEBIAN_FRONTEND=noninteractive useradd -g shwrm -s /bin/bash -m tracking",
                 "sudo -u tracking mkdir /home/tracking/.ssh",
-                "sudo usermod -a -G www-data tracking"
+                "sudo usermod -a -G shwrm www-data"
             ]
         },
         {
