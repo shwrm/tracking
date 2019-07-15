@@ -5,6 +5,7 @@ namespace Shwrm\Tracking\Integrations\Adapters;
 use mirolabs\ruch\client\Client as PWRClient;
 use mirolabs\ruch\client\Enum\PackStatus as EnumPackStatus;
 use mirolabs\ruch\client\Type\PackStatus;
+use mirolabs\ruch\client\Type\PackStatusResponse;
 use Shwrm\Tracking\Enum\Status;
 use Shwrm\Tracking\Exception\UnknownStatusException;
 use Shwrm\Tracking\Integrations\AbstractAdapter;
@@ -30,7 +31,7 @@ class PWRAdapter extends AbstractAdapter
         $packStatus->setPackCode($parameters['trackingCode']);
 
         $packStatusResponse = $this->client->getPackStatus($packStatus);
-        if (null === $packStatusResponse->getCode()) {
+        if (false === ($packStatusResponse instanceof PackStatusResponse) or null === $packStatusResponse->getCode()) {
             throw new UnknownStatusException();
         }
 
