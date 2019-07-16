@@ -13,10 +13,21 @@ services:
         tags: ['shwrm.tracking.adapter']
 
     Shwrm\Tracking\Integrations\AdapterResolver:
-        arguments: [[!tagged shwrm.tracking.adapter]]
+        arguments: [!tagged shwrm.tracking.adapter]
 
     mirolabs\ruch\client\Client:
         arguments:
             - '%env(PWR_PARTNER_ID)%'
             - '%env(PWR_PARTNER_KEY)%'
             - '%env(PWR_ENV)%'
+
+    Webit\DPDClient\DPDInfoServices\Common\AuthDataV1:
+        arguments:
+            - '%env(DPD_LOGIN)%'
+            - '%env(DPD_PASSWORD)%'
+            - '%env(DPD_CHANNEL)%'
+
+    Webit\DPDClient\DPDInfoServices\Client\ClientFactory: ~
+    Webit\DPDClient\DPDInfoServices\Client:
+        factory:   ['@Webit\DPDClient\DPDInfoServices\Client\ClientFactory', create]
+        arguments: ['@Webit\DPDClient\DPDInfoServices\Common\AuthDataV1']

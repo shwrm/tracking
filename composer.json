@@ -8,7 +8,8 @@
         "symfony/flex": "^1.4",
         "symfony/framework-bundle": "^4.3",
         "symfony/security-bundle": "^4.3",
-        "symfony/yaml": "^4.3"
+        "symfony/yaml": "^4.3",
+        "webit/dpd-client": "^1.0"
     },
     "require-dev": {
         "easycorp/easy-deploy-bundle": "^1.0",

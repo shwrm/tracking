@@ -2,6 +2,7 @@
 
 namespace Shwrm\Tracking\Controller;
 
+use Shwrm\Tracking\Exception\AccessToCarrierDenied;
 use Shwrm\Tracking\Exception\NotImplementedAdapterException;
 use Shwrm\Tracking\Exception\UnknownStatusException;
 use Shwrm\Tracking\Integrations\AdapterResolver;
@@ -37,6 +38,8 @@ class TrackingController
             $status = $adapter->track($parameters);
         } catch (UnknownStatusException $exception) {
             return new JsonResponse('Cannot fetch status', 400);
+        } catch (AccessToCarrierDenied $exception) {
+            return new JsonResponse($exception->getMessage(), 400);
         }
 
         return new JsonResponse(['status' => $status]);
