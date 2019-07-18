@@ -12,7 +12,7 @@ class AdapterResolver
     public function __construct(iterable $adapters)
     {
         foreach ($adapters as $adapter) {
-            $this->addAdapter($adapter->getIterator()->current());
+            $this->addAdapter($adapter);
         }
     }
 

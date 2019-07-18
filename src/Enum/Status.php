@@ -2,7 +2,7 @@
 
 namespace Shwrm\Tracking\Enum;
 
-class Status
+final class Status
 {
     const NEW       = 'new';
     const SENT      = 'sent';
