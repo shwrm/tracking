@@ -38,9 +38,6 @@ jobs:
     build:
         <<: *container_config
         steps:
-            -   add_ssh_keys:
-                    fingerprints:
-                        - "2f:f8:5c:e1:9a:3f:2e:d4:bd:b7:47:75:92:38:07:04"
             -   run: git clone git@github.com:shwrm/devenv.git
             -   checkout:
                     path: devenv/projects/tracking
