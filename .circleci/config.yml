@@ -1,0 +1,54 @@
+version: 2.0
+
+references:
+    container_config: &container_config
+        working_directory: /home/circleci
+        machine:
+            docker_layer_caching: true
+        environment:
+            -   DOCKER_HOST_IP: 127.0.0.1
+            -   DOCKER_MACHINE_SHWRM: 127.0.0.1
+            -   WORK_DIR: /home/circleci
+
+    composer_restore_cache: &composer_restore_cache
+        restore_cache:
+            keys:
+                - v1-composer-{{ checksum "devenv/projects/tracking/composer.lock" }}
+            paths:
+                - devenv/projects/tracking/vendor/
+    composer_save_cache: &composer_save_cache
+        save_cache:
+            key: v1-composer-{{ checksum "devenv/projects/tracking/composer.lock" }}
+            paths:
+                - devenv/projects/tracking/vendor/
+
+    phpunit_restore_cache: &phpunit_restore_cache
+        restore_cache:
+            keys:
+                - v1-phpunit
+            paths:
+                - devenv/projects/tracking/bin/.phpunit/
+    phpunit_save_cache: &phpunit_save_cache
+        save_cache:
+            key: v1-phpunit
+            paths:
+                - devenv/projects/tracking/bin/.phpunit/
+
+jobs:
+    build:
+        <<: *container_config
+        steps:
+            -   add_ssh_keys:
+                    fingerprints:
+                        - "2f:f8:5c:e1:9a:3f:2e:d4:bd:b7:47:75:92:38:07:04"
+            -   run: git clone git@github.com:shwrm/devenv.git
+            -   checkout:
+                    path: devenv/projects/tracking
+            -   run: devenv/bin/create.sh -p tracking
+            - *composer_restore_cache
+            -   run: sudo chmod -R 0777 devenv/projects/tracking
+            -   run: devenv/bin/exec.sh tracking composer install -o -n
+            - *composer_save_cache
+            - *phpunit_restore_cache
+            -   run: devenv/bin/exec.sh tracking bin/phpunit --stop-on-failure
+            - *phpunit_save_cache
