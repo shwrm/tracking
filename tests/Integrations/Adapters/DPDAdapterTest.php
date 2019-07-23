@@ -8,6 +8,7 @@ use Shwrm\Tracking\Enum\Status;
 use Shwrm\Tracking\Exception\AccessToCarrierDenied;
 use Shwrm\Tracking\Exception\UnknownStatusException;
 use Shwrm\Tracking\Integrations\Adapters\DPDAdapter;
+use Shwrm\Tracking\Integrations\Clients\Factories\DPDClientFactory;
 use Shwrm\Tracking\ValueObject\Collection\ValidationErrors;
 use Shwrm\Tracking\ValueObject\ValidationError;
 use Webit\DPDClient\DPDInfoServices\Client;
@@ -22,8 +23,8 @@ class DPDAdapterTest extends TestCase
      */
     public function testValidate(array $parameters, ValidationErrors $expected)
     {
-        $client  = $this->createMock(Client::class);
-        $adapter = new DPDAdapter($client);
+        $factory = $this->createMock(DPDClientFactory::class);
+        $adapter = new DPDAdapter($factory);
 
         $this->assertEquals($expected, $adapter->validate($parameters));
     }
@@ -46,9 +47,15 @@ class DPDAdapterTest extends TestCase
             ->method('getEventsForWaybillV1')
             ->willReturn($events)
         ;
-        $adapter = new DPDAdapter($client);
+        $factory = $this->createMock(DPDClientFactory::class);
+        $factory
+            ->expects($this->once())
+            ->method('create')
+            ->willReturn($client)
+        ;
+        $adapter = new DPDAdapter($factory);
 
-        $this->assertEquals(DPDBusinessCodes::SENT, $adapter->fetchStatus(['trackingCode' => 'test']));
+        $this->assertEquals(DPDBusinessCodes::SENT, $adapter->fetchStatus('1', ['trackingCode' => 'test']));
     }
 
     public function testFetchUnknownStatus()
@@ -60,26 +67,39 @@ class DPDAdapterTest extends TestCase
             ->method('getEventsForWaybillV1')
             ->willReturn($events)
         ;
-        $adapter = new DPDAdapter($client);
+        $factory = $this->createMock(DPDClientFactory::class);
+        $factory
+            ->expects($this->once())
+            ->method('create')
+            ->willReturn($client)
+        ;
+        $adapter = new DPDAdapter($factory);
 
         $this->expectException(UnknownStatusException::class);
 
-        $adapter->fetchStatus(['trackingCode' => 'test']);
+        $adapter->fetchStatus('1', ['trackingCode' => 'test']);
     }
 
     public function testFetchStatusThrowsAuthException()
     {
-        $client  = $this->createMock(Client::class);
+        $client = $this->createMock(Client::class);
         $client
             ->expects($this->once())
             ->method('getEventsForWaybillV1')
-            ->willThrowException(new AccessDeniedException());
-        $adapter = new DPDAdapter($client);
+            ->willThrowException(new AccessDeniedException())
+        ;
+        $factory = $this->createMock(DPDClientFactory::class);
+        $factory
+            ->expects($this->once())
+            ->method('create')
+            ->willReturn($client)
+        ;
+        $adapter = new DPDAdapter($factory);
 
         $this->expectException(AccessToCarrierDenied::class);
         $this->expectExceptionMessage('Access denied for: dpd');
 
-        $adapter->fetchStatus(['trackingCode' => 'test']);
+        $adapter->fetchStatus('1', ['trackingCode' => 'test']);
     }
 
     /**
@@ -87,8 +107,8 @@ class DPDAdapterTest extends TestCase
      */
     public function testResolveStatus(string $adapterStatus, string $expectedStatus)
     {
-        $client  = $this->createMock(Client::class);
-        $adapter = new DPDAdapter($client);
+        $factory = $this->createMock(DPDClientFactory::class);
+        $adapter = new DPDAdapter($factory);
 
         $this->assertEquals($expectedStatus, $adapter->resolveStatus($adapterStatus));
     }
@@ -106,8 +126,8 @@ class DPDAdapterTest extends TestCase
 
     public function testResolveUnknownStatus()
     {
-        $client  = $this->createMock(Client::class);
-        $adapter = new DPDAdapter($client);
+        $factory = $this->createMock(DPDClientFactory::class);
+        $adapter = new DPDAdapter($factory);
 
         $this->expectException(UnknownStatusException::class);
 

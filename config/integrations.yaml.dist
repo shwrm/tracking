@@ -1,0 +1,12 @@
+parameters:
+    integrations:
+        - pwr:
+            - integration1:
+                - partnerId: ~
+                - partnerKey: ~
+                - environment: ~
+        - dpd:
+            - integration1:
+                - login: ~
+                - password: ~
+                - channel: ~

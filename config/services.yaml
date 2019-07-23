@@ -8,26 +8,16 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
+    Shwrm\Tracking\Integrations\Clients\Config\ConfigResolver:
+        arguments:
+            - '%integrations%'
+
     Shwrm\Tracking\Integrations\Adapters\:
         resource: '../src/Integrations/Adapters'
         tags: ['shwrm.tracking.adapter']
 
-    Shwrm\Tracking\Integrations\AdapterResolver:
+    Shwrm\Tracking\Integrations\Adapters\AdapterResolver:
         arguments: [!tagged shwrm.tracking.adapter]
 
-    mirolabs\ruch\client\Client:
-        arguments:
-            - '%env(PWR_PARTNER_ID)%'
-            - '%env(PWR_PARTNER_KEY)%'
-            - '%env(PWR_ENV)%'
-
-    Webit\DPDClient\DPDInfoServices\Common\AuthDataV1:
-        arguments:
-            - '%env(DPD_LOGIN)%'
-            - '%env(DPD_PASSWORD)%'
-            - '%env(DPD_CHANNEL)%'
-
-    Webit\DPDClient\DPDInfoServices\Client\ClientFactory: ~
-    Webit\DPDClient\DPDInfoServices\Client:
-        factory:   ['@Webit\DPDClient\DPDInfoServices\Client\ClientFactory', create]
-        arguments: ['@Webit\DPDClient\DPDInfoServices\Common\AuthDataV1']
+    Shwrm\Tracking\Integrations\Clients\Factories\:
+        resource: '../src/Integrations/Clients/Factories'
