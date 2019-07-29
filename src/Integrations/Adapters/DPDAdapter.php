@@ -6,8 +6,7 @@ use Shwrm\Tracking\Enum\DPDBusinessCodes;
 use Shwrm\Tracking\Enum\Status;
 use Shwrm\Tracking\Exception\AccessToCarrierDenied;
 use Shwrm\Tracking\Exception\UnknownStatusException;
-use Shwrm\Tracking\Integrations\AbstractAdapter;
-use Webit\DPDClient\DPDInfoServices\Client;
+use Shwrm\Tracking\Integrations\Clients\Factories\DPDClientFactory;
 use Webit\DPDClient\DPDInfoServices\Common\Exception\AccessDeniedException;
 use Webit\DPDClient\DPDInfoServices\CustomerEvents\CustomerEventDataV3;
 use Webit\DPDClient\DPDInfoServices\CustomerEvents\CustomerEventsResponseV3;
@@ -16,23 +15,27 @@ use Webit\DPDClient\DPDInfoServices\CustomerEvents\EventsSelectTypeEnum;
 
 class DPDAdapter extends AbstractAdapter
 {
-    /** @var Client */
-    private $client;
+    /** @var DPDClientFactory */
+    private $clientFactory;
 
-    public function __construct(Client $client)
+    const NAME = 'dpd';
+
+    public function __construct(DPDClientFactory $clientFactory)
     {
-        $this->client = $client;
+        $this->clientFactory = $clientFactory;
     }
 
     public function name(): string
     {
-        return 'dpd';
+        return self::NAME;
     }
 
-    public function fetchStatus(array $parameters): string
+    public function fetchStatus(string $id, array $parameters): string
     {
+        $client = $this->clientFactory->create($id);
+
         try {
-            $events = $this->client
+            $events = $client
                 ->getEventsForWaybillV1($parameters['trackingCode'], EventsSelectTypeEnum::all(), 'PL');
         } catch (AccessDeniedException $exception) {
             throw new AccessToCarrierDenied($this->name(), $exception);
@@ -49,7 +52,7 @@ class DPDAdapter extends AbstractAdapter
         $lastEvent = \current($events->eventsList());
 
         if ($this->isRedirected($lastEvent)) {
-            return $this->handleRedirect($lastEvent);
+            return $this->handleRedirect($lastEvent, $id);
         }
 
         $status = DPDBusinessCodes::mapBusinessCodeToStatus($lastEvent->businessCode());
@@ -100,7 +103,7 @@ class DPDAdapter extends AbstractAdapter
         return \array_key_exists($event->businessCode(), DpdBusinessCodes::redirected());
     }
 
-    private function handleRedirect(CustomerEventV3 $event)
+    private function handleRedirect(CustomerEventV3 $event, string $id)
     {
         /** @var CustomerEventDataV3 $eventData */
         $eventData = \current($event->eventDataList());
@@ -109,6 +112,6 @@ class DPDAdapter extends AbstractAdapter
             throw new UnknownStatusException();
         }
 
-        return $this->fetchStatus(['trackingCode' => $eventData->value()]);
+        return $this->fetchStatus($id, ['trackingCode' => $eventData->value()]);
     }
 }

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Shwrm\Tracking\Integrations;
+namespace Shwrm\Tracking\Integrations\Adapters;
 
 use Shwrm\Tracking\ValueObject\Collection\ValidationErrors;
 
@@ -10,5 +10,5 @@ interface IntegrationAdapterInterface
 
     public function validate(array $parameters): ValidationErrors;
 
-    public function track(array $parameters): string;
+    public function track(string $id, array $parameters): string;
 }

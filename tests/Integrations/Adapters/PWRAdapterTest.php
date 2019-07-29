@@ -10,6 +10,9 @@ use PHPUnit\Framework\TestCase;
 use Shwrm\Tracking\Enum\Status;
 use Shwrm\Tracking\Exception\UnknownStatusException;
 use Shwrm\Tracking\Integrations\Adapters\PWRAdapter;
+use Shwrm\Tracking\Integrations\Clients\ClientFactoryResolver;
+use Shwrm\Tracking\Integrations\Clients\Factories\PWRClientFactory;
+use Shwrm\Tracking\Integrations\Clients\IntegrationClientFactoryInterface;
 use Shwrm\Tracking\ValueObject\Collection\ValidationErrors;
 use Shwrm\Tracking\ValueObject\ValidationError;
 
@@ -20,8 +23,8 @@ class PWRAdapterTest extends TestCase
      */
     public function testValidate(array $parameters, ValidationErrors $expected)
     {
-        $client  = $this->createMock(Client::class);
-        $adapter = new PWRAdapter($client);
+        $factory = $this->createMock(PWRClientFactory::class);
+        $adapter = new PWRAdapter($factory);
 
         $this->assertEquals($expected, $adapter->validate($parameters));
     }
@@ -45,9 +48,15 @@ class PWRAdapterTest extends TestCase
             ->method('getPackStatus')
             ->willReturn($response)
         ;
-        $adapter = new PWRAdapter($client);
+        $factory = $this->createMock(PWRClientFactory::class);
+        $factory
+            ->expects($this->once())
+            ->method('create')
+            ->willReturn($client)
+        ;
+        $adapter = new PWRAdapter($factory);
 
-        $this->assertEquals(PackStatus::RECEIVED, $adapter->fetchStatus(['trackingCode' => 'test']));
+        $this->assertEquals(PackStatus::RECEIVED, $adapter->fetchStatus('1', ['trackingCode' => 'test']));
     }
 
     public function testFetchUnknownStatus()
@@ -58,11 +67,17 @@ class PWRAdapterTest extends TestCase
             ->method('getPackStatus')
             ->willReturn(new PackStatusResponse())
         ;
-        $adapter = new PWRAdapter($client);
+        $factory = $this->createMock(PWRClientFactory::class);
+        $factory
+            ->expects($this->once())
+            ->method('create')
+            ->willReturn($client)
+        ;
+        $adapter = new PWRAdapter($factory);
 
         $this->expectException(UnknownStatusException::class);
 
-        $adapter->fetchStatus(['trackingCode' => 'test']);
+        $adapter->fetchStatus('1', ['trackingCode' => 'test']);
     }
 
     /**
@@ -70,8 +85,8 @@ class PWRAdapterTest extends TestCase
      */
     public function testResolveStatus(string $adapterStatus, string $expectedStatus)
     {
-        $client  = $this->createMock(Client::class);
-        $adapter = new PWRAdapter($client);
+        $factory = $this->createMock(PWRClientFactory::class);
+        $adapter = new PWRAdapter($factory);
 
         $this->assertEquals($expectedStatus, $adapter->resolveStatus($adapterStatus));
     }
@@ -106,8 +121,8 @@ class PWRAdapterTest extends TestCase
 
     public function testResolveUnknownStatus()
     {
-        $client  = $this->createMock(Client::class);
-        $adapter = new PWRAdapter($client);
+        $factory = $this->createMock(PWRClientFactory::class);
+        $adapter = new PWRAdapter($factory);
 
         $this->expectException(UnknownStatusException::class);
 

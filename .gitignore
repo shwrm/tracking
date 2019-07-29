@@ -1,3 +1,4 @@
+config/integrations.yaml
 
 ###> symfony/framework-bundle ###
 /.env.local

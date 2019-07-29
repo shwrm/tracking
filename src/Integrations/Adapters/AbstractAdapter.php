@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace Shwrm\Tracking\Integrations;
+namespace Shwrm\Tracking\Integrations\Adapters;
 
 use Shwrm\Tracking\ValueObject\Collection\ValidationErrors;
 use Shwrm\Tracking\ValueObject\ValidationError;
 
 abstract class AbstractAdapter implements IntegrationAdapterInterface
 {
-    public function track(array $parameters): string
+    public function track(string $id, array $parameters): string
     {
-        $adapterStatus = $this->fetchStatus($parameters);
+        $adapterStatus = $this->fetchStatus($id, $parameters);
 
         return $this->resolveStatus($adapterStatus);
     }
@@ -23,7 +23,7 @@ abstract class AbstractAdapter implements IntegrationAdapterInterface
         return new ValidationErrors($errors ?? []);
     }
 
-    abstract protected function fetchStatus(array $parameters): string;
+    abstract protected function fetchStatus(string $id, array $parameters): string;
 
     abstract protected function resolveStatus(string $adapterStatus): string;
 }

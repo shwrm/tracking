@@ -5,7 +5,7 @@ namespace Shwrm\Tracking\Controller;
 use Shwrm\Tracking\Exception\AccessToCarrierDenied;
 use Shwrm\Tracking\Exception\NotImplementedAdapterException;
 use Shwrm\Tracking\Exception\UnknownStatusException;
-use Shwrm\Tracking\Integrations\AdapterResolver;
+use Shwrm\Tracking\Integrations\Adapters\AdapterResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -19,7 +19,7 @@ class TrackingController
         $this->adapterResolver = $adapterResolver;
     }
 
-    public function trackAction(Request $request, string $carrier)
+    public function trackAction(Request $request, string $carrier, string $id)
     {
         try {
             $adapter = $this->adapterResolver->resolve($carrier);
@@ -35,7 +35,7 @@ class TrackingController
         }
 
         try {
-            $status = $adapter->track($parameters);
+            $status = $adapter->track($id, $parameters);
         } catch (UnknownStatusException $exception) {
             return new JsonResponse('Cannot fetch status', 400);
         } catch (AccessToCarrierDenied $exception) {

@@ -2,22 +2,21 @@
 
 namespace Shwrm\Tracking\Integrations\Adapters;
 
-use mirolabs\ruch\client\Client as PWRClient;
 use mirolabs\ruch\client\Enum\PackStatus as EnumPackStatus;
 use mirolabs\ruch\client\Type\PackStatus;
 use mirolabs\ruch\client\Type\PackStatusResponse;
 use Shwrm\Tracking\Enum\Status;
 use Shwrm\Tracking\Exception\UnknownStatusException;
-use Shwrm\Tracking\Integrations\AbstractAdapter;
+use Shwrm\Tracking\Integrations\Clients\Factories\PWRClientFactory;
 
 class PWRAdapter extends AbstractAdapter
 {
-    /** @var PWRClient */
-    private $client;
+    /** @var PWRClientFactory */
+    private $clientFactory;
 
-    public function __construct(PWRClient $client)
+    public function __construct(PWRClientFactory $clientFactory)
     {
-        $this->client = $client;
+        $this->clientFactory = $clientFactory;
     }
 
     public function name(): string
@@ -25,12 +24,13 @@ class PWRAdapter extends AbstractAdapter
         return 'pwr';
     }
 
-    public function fetchStatus(array $parameters): string
+    public function fetchStatus(string $id, array $parameters): string
     {
+        $client     = $this->clientFactory->create($id);
         $packStatus = new PackStatus();
         $packStatus->setPackCode($parameters['trackingCode']);
 
-        $packStatusResponse = $this->client->getPackStatus($packStatus);
+        $packStatusResponse = $client->getPackStatus($packStatus);
         if (false === ($packStatusResponse instanceof PackStatusResponse) or null === $packStatusResponse->getCode()) {
             throw new UnknownStatusException();
         }

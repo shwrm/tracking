@@ -1,8 +1,9 @@
 tracking:
-    path: /track/{carrier}
+    path: /track/{carrier}/{id}
     controller: Shwrm\Tracking\Controller\TrackingController::trackAction
     requirements:
         carrier: '\w+'
+        id: '\w+'
 
 status:
     path: /status
