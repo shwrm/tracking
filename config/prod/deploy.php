@@ -12,6 +12,7 @@ return new class extends DefaultDeployer
             ->repositoryUrl('git@github.com:shwrm/tracking.git')
             ->repositoryBranch('master')
             ->installWebAssets(false)
+            ->sharedFilesAndDirs(['config/integrations.yaml'])
         ;
         return $builder;
     }
