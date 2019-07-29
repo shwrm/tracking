@@ -2,6 +2,7 @@
 
 namespace Shwrm\Tracking\Integrations\Clients\Factories;
 
+use Shwrm\Tracking\Integrations\Adapters\DPDAdapter;
 use Shwrm\Tracking\Integrations\Clients\Config\ConfigResolver;
 use Shwrm\Tracking\Integrations\Clients\IntegrationClientFactoryInterface;
 use Webit\DPDClient\DPDInfoServices\Client\ClientFactory;
@@ -19,7 +20,7 @@ class DPDClientFactory implements IntegrationClientFactoryInterface
 
     public function create(string $id): object
     {
-        $config = $this->configResolver->resolve('dpd', $id);
+        $config = $this->configResolver->resolve(DPDAdapter::NAME, $id);
 
         $clientFactory = new ClientFactory();
         $client        = $clientFactory

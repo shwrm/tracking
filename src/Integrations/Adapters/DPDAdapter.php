@@ -18,6 +18,8 @@ class DPDAdapter extends AbstractAdapter
     /** @var DPDClientFactory */
     private $clientFactory;
 
+    const NAME = 'dpd';
+
     public function __construct(DPDClientFactory $clientFactory)
     {
         $this->clientFactory = $clientFactory;
@@ -25,12 +27,13 @@ class DPDAdapter extends AbstractAdapter
 
     public function name(): string
     {
-        return 'dpd';
+        return self::NAME;
     }
 
     public function fetchStatus(string $id, array $parameters): string
     {
         $client = $this->clientFactory->create($id);
+
         try {
             $events = $client
                 ->getEventsForWaybillV1($parameters['trackingCode'], EventsSelectTypeEnum::all(), 'PL');
