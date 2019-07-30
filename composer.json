@@ -3,6 +3,7 @@
     "license": "proprietary",
     "require": {
         "php": "^7.3",
+        "gabrielbull/ups-api": "^0.8.0",
         "mirolabs/ruch-client": "dev-master",
         "symfony/console": "^4.3",
         "symfony/flex": "^1.4",
