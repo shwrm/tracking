@@ -1,12 +1,21 @@
 parameters:
     integrations:
-        - pwr:
-            - integration1:
-                - partnerId: ~
-                - partnerKey: ~
-                - environment: ~
-        - dpd:
-            - integration1:
-                - login: ~
-                - password: ~
-                - channel: ~
+        pwr:
+            integration1:
+                partnerId: ~
+                partnerKey: ~
+                environment: ~
+            integration2:
+                partnerId: ~
+                partnerKey: ~
+                environment: ~
+        dpd:
+            integration1:
+                login: ~
+                password: ~
+                channel: ~
+        ups:
+            integration1:
+                userId: ~
+                password: ~
+                accessKey: ~
