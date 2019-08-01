@@ -48,7 +48,12 @@ class UPSAdapter extends AbstractAdapter
         }
 
         $activity = \current($result->Package->Activity);
-        $type     = $activity->Status->StatusType->Code;
+
+        if (false === isset($activity->Status)) {
+            throw new UnknownStatusException();
+        }
+
+        $type = $activity->Status->StatusType->Code;
 
         if ('D' === $type) {
             $code = $activity->Status->StatusCode->Code;
